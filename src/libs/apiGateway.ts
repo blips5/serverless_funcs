@@ -4,9 +4,25 @@ import type { FromSchema } from "json-schema-to-ts";
 type ValidatedAPIGatewayProxyEvent<S> = Omit<APIGatewayProxyEvent, 'body'> & { body: FromSchema<S> }
 export type ValidatedEventAPIGatewayProxyEvent<S> = Handler<ValidatedAPIGatewayProxyEvent<S>, APIGatewayProxyResult>
 
-export const formatJSONResponse = (response: Record<string, unknown>)  => {
+interface Response  {
+  statusCode: number,
+  body: string
+}
+
+interface RawResponse {
+  status: number,
+  message: string,
+  event
+}
+
+/**
+ * Formats a response to be returned.
+ * @param {RawResponse} response The response to be formatted.
+ * @returns {Response} A formatted response.
+ */
+export const formatResponse = (response: RawResponse): Response  => {
   return {
-    statusCode: 200,
-    body: JSON.stringify(response)
+    statusCode: response.status,
+    body: JSON.stringify(response.message)
   }
 }

@@ -4,6 +4,9 @@
   "description": "Serverless aws-nodejs-typescript template",
   "main": "serverless.ts",
   "scripts": {
+    "start-dev": "set SLS_DEBUG=* && set IS_LOCAL=true && serverless offline start",
+    "debug": "",
+    "build": "tsc",
     "lint": "eslint . --ext ts --cache --fix",
     "prettier": "prettier  \"./**/*.ts\" --list-different",
     "typecheck": "tsc --noEmit",
@@ -15,15 +18,19 @@
   "dependencies": {
     "@middy/core": "^1.5.2",
     "@middy/http-json-body-parser": "^1.5.2",
-    "source-map-support": "^0.5.19"
+    "bcrypt": "^5.0.0",
+    "source-map-support": "^0.5.19",
+    "stripe": "^8.169.0"
   },
   "devDependencies": {
     "@serverless/typescript": "^2.23.0",
     "@types/aws-lambda": "^8.10.71",
+    "@types/bcrypt": "^5.0.0",
     "@types/node": "^14.14.25",
     "@types/webpack": "^5.28.0",
     "@typescript-eslint/eslint-plugin": "^4.29.1",
     "@typescript-eslint/parser": "^4.29.1",
+    "aws-sdk": "^2.968.0",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.0",
@@ -32,6 +39,9 @@
     "json-schema-to-ts": "^1.5.0",
     "prettier": "^2.3.2",
     "serverless": "^2.23.0",
+    "serverless-dynamodb-local": "^0.2.40",
+    "serverless-offline": "^8.0.0",
+    "serverless-plugin-typescript": "^1.1.9",
     "serverless-webpack": "^5.3.5",
     "ts-loader": "^8.0.15",
     "ts-node": "^9.1.1",

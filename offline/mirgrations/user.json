@@ -1,0 +1,30 @@
+{
+  "Table": {
+    "TableName": "users",
+    "KeySchema": [
+      {
+        "AttributeName": "id",
+        "KeyType": "HASH"
+      }
+    ],
+    "AttributesDefinitions": [
+      {
+        "AttributeName": "id",
+        "AttributeType": "S"
+      },
+      {
+        "AttributeName": "username",
+        "AttributeType": "S"
+      },
+      {
+        "AttributeName": "password",
+        "AttributeType": "S"
+      }
+    ],
+    "ProvisionedThroughput": {
+      "ReadCapacityUnits": 1,
+      "WriteCapacityUnit": 1
+    }
+  }
+}
+

@@ -1,0 +1,1 @@
+{"version":3,"file":"apiGateway.js","sourceRoot":"","sources":["../../../src/libs/apiGateway.ts"],"names":[],"mappings":"AAgBA,MAAM,CAAC,MAAM,kBAAkB,GAAG,CAAC,QAAqB,EAAa,EAAE;IACrE,OAAO;QACL,UAAU,EAAE,GAAG;QACf,IAAI,EAAE,IAAI,CAAC,SAAS,CAAC,QAAQ,CAAC,OAAO,CAAC;KACvC,CAAA;AACH,CAAC,CAAA"}
