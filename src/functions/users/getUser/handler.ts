@@ -3,8 +3,8 @@ import type { ValidatedEventAPIGatewayProxyEvent } from '@libs/apiGateway';
 import { formatResponse } from '@libs/apiGateway';
 import { middyfy } from '@libs/lambda';
 import schema from './schema';
-import { User } from '@functions/interfaces';
-import { UserDynamodb } from '@libs/mainDynamodb';
+import { UserBasic } from '@functions/users/classes/user';
+
 
 /**
  * Gets a user.
@@ -13,23 +13,31 @@ import { UserDynamodb } from '@libs/mainDynamodb';
  */
 const getUser: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (event) => {
   const userId: string = event.pathParameters.id;
-  const user:User = await UserDynamodb.GetUser(userId);
+  try {
+    const user = await UserBasic.Get(userId);
 
-  if (user) {
-    console.log(user)
-    return formatResponse({
-      status: 200,
-      message: `Hello ${user.username}, welcome to the exciting Serverless world!`,
-      event,
-    });
+    if (user) {
+      return formatResponse({
+        status: 200,
+        message: user,
+        event,
+      });
+    } else {
+      return formatResponse({
+        status: 404,
+        message: {User: userId, Error: 'not found!'},
+        event,
+      });
+    }
   }
-  else {
+  catch (e) {
+    console.log(e)
     return formatResponse({
       status: 404,
-      message: `User: ${userId}, not found!`,
+      message: {User: userId, Error: 'not found!'},
       event,
     });
   }
 }
 
-export const main = middyfy(getUser);
+export const GetUser = middyfy(getUser);

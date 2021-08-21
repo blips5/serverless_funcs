@@ -2,11 +2,11 @@ import schema from './schema';
 import { handlerPath } from '@libs/handlerResolver';
 
 export default {
-  handler: `${handlerPath(__dirname)}/handler.main`,
+  handler: `${handlerPath(__dirname)}/handler.GetUser`,
   events: [
     {
       http: {
-        method: 'put',
+        method: 'get',
         path: 'user/{id}',
         request: {
           schema: {
