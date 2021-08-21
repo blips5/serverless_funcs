@@ -1,20 +1,15 @@
 import bcrypt from 'bcrypt';
-import { User } from '@functions/interfaces';
+import { IUser } from '@functions/users/interfaces';
+
 
 export class Crypto {
 
     static async encryptPassword(password: string): Promise<string> {
-
-        const newPassword:string = await bcrypt.hash(password, 10)
-        return newPassword;
+        return await bcrypt.hash(password, 10);
     }
 
-    static async decryptPassword(password:string, user:User): Promise<boolean> {
-        const isMatch = await bcrypt.compare(password, user.password);
-        if(isMatch) {
-            return true;
-        }
-        return false;
+    static async checkPassword(password:string, user:IUser): Promise<boolean> {
+        return await bcrypt.compare(password, user.password);
     }
 
     /**

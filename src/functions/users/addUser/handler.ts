@@ -3,9 +3,10 @@ import type { ValidatedEventAPIGatewayProxyEvent } from '@libs/apiGateway';
 import { formatResponse } from '@libs/apiGateway';
 import { middyfy } from '@libs/lambda';
 import schema from './schema';
-import { User } from '@functions/interfaces';
-import { UserDynamodb } from '@libs/mainDynamodb';
 import { Crypto } from '@functions/helpers/crypto';
+import { IUser } from '@functions/users/interfaces';
+import { UserBasic } from '@functions/users/classes/user';
+import { RoleType } from '@functions/users/enums';
 
 /**
  * Adds a new User.
@@ -13,22 +14,21 @@ import { Crypto } from '@functions/helpers/crypto';
  * @returns [{Response}] a formatted response of success / failure.
  */
 const addUser: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (event) => {
-  const { id } = event.pathParameters;
-  const user: User = {
-    id: id,
-    username: event.body.username,
-    password: event.body.password
-  }
+  const { body, pathParameters } = event;
+  const user: IUser = new UserBasic(
+      body.username, body.password, body.email,
+      body.createdAt, pathParameters.id,
+      body.roles as RoleType[]
+  )
 
   if (Crypto.checkRequirements(user.password)) {
     try {
       user.password = await Crypto.encryptPassword(user.password)
-      console.log('Adding user');
-      const res = await UserDynamodb.AddUser(user)
+      const res = await UserBasic.Create(user)
       if (res) {
         return formatResponse({
-          status: 200,
-          message: `success`,
+          status: 201,
+          message: {message:res},
           event
         });
       }
@@ -37,15 +37,15 @@ const addUser: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (event)
       console.log(err)
       return formatResponse({
         status: 422,
-        message: `Unprocessable Entity ??`,
+        message: {error: `Unprocessable Entity ??`},
         event
       });
     }
   } return formatResponse({
     status: 422,
-    message: `Unprocessable Entity password does not meet the requirements!`,
+    message: {error: `Unprocessable Entity password does not meet the requirements!`},
     event
   });
 }
 
-export const main = middyfy(addUser);
+export const AddUser = middyfy(addUser);

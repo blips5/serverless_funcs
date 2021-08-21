@@ -1,6 +1,6 @@
 import type { AWS } from '@serverless/typescript';
-import getUser from '@functions/getUser';
-import addUser from '@functions/addUser';
+import getUser from '@functions/users/getUser';
+import addUser from '@functions/users/addUser';
 
 
 const serverlessConfiguration: AWS = {

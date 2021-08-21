@@ -1,5 +1,7 @@
-import { DynamoDB }  from 'aws-sdk';
-import { User } from '@functions/interfaces';
+import {  DynamoDB } from 'aws-sdk';
+import { AttributeMap, PutItemInput } from 'aws-sdk/clients/dynamodb';
+import { DocumentClient } from 'aws-sdk/lib/dynamodb/document_client';
+import GetItemInput = DocumentClient.GetItemInput;
 
 console.log(`Env local: ${process.env.IS_LOCAL}`)
 
@@ -13,44 +15,37 @@ const DbClient  = new DynamoDB.DocumentClient({
 })
 
 //console.log(DbClient)
+export interface ITableParams extends GetItemInput, PutItemInput {
 
 
-export class UserDynamodb {
+}
 
-    static AddUser = (user:User):Promise<string> => {
-        return new Promise<string>((resolve, reject) => {
-            console.log(user)
-            const params = {
-                TableName: 'users',
-                Item: user
-            };
+export class MainDynamodb {
 
-            DbClient.put(params, (err, res) => {
-                if (err) {
-                    console.log(err);
-                    reject(`Failed to add user: ${user.id}`);
-                }
-                console.log(res);
-                resolve('success');
-            });
-        });
-    }
-
-    static GetUser = (id: string): Promise<User> => new Promise<User>((resolve, reject) => {
-        const params = {
-            TableName: 'users',
-            Key: {
-                id,
+    static Add = (tableParams:PutItemInput):Promise<string> =>
+        new Promise((resolve, reject) => {
+        DbClient.put(tableParams, (err, res) => {
+            if (err) {
+                console.log(err);
+                reject(`Failed to add to ${tableParams.TableName} \n ${err.message}`);
             }
-        }
-        DbClient.get(params, (err, res) => {
+            console.log(res);
+            resolve('success');
+        });
+    });
+
+
+    static Get = (tableParams:GetItemInput): Promise<AttributeMap> =>
+        new Promise((resolve, reject) => {
+        DbClient.get(tableParams, (err, res) => {
             if (err) {
                 console.log(err);
                 reject(err);
             }
-            //console.log(res);
-            const user:User = <User>res.Item;
-            resolve(user)
+            console.log("res1")
+            console.log(res)
+            resolve(res.Item)
+
         });
     })
 }
